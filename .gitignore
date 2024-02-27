@@ -21,3 +21,7 @@ package-lock.json
 assets/js/dist
 
 .DS_Store
+
+#test post
+_posts/2024-02-22-test.md
+assets/img/posts/2024-02-22-test/
