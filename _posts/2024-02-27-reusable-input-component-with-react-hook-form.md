@@ -8,7 +8,7 @@ image: react-hook-form-logo.png
 render_with_liquid: false
 ---
 
-[react-hook-form](https://www.react-hook-form.com/)은 React에서 input을 사용할 때 유효성 검사와 각종 상태 관리를 간편하게 할 수 있도록 돕는 라이브러리입니다.
+[react-hook-form](https://www.react-hook-form.com/){:target="\_blank"}은 React에서 input을 사용할 때 유효성 검사와 각종 상태 관리를 간편하게 할 수 있도록 돕는 라이브러리입니다.
 개인적으로 사용하면서 가장 만족하는 React 라이브러리 중 하나인데요.
 
 이 react-hook-form의 `useController` hook을 이용해서 재사용 가능한 input 컴포넌트를 만들어 본 과정을 소개하고자 합니다.
@@ -60,7 +60,7 @@ const Form = () => {
 };
 ```
 
-[`register`](https://react-hook-form.com/docs/useform/register)는 input에 자신의 반환값들을 속성으로 넘겨서 사용합니다.
+[`register`](https://react-hook-form.com/docs/useform/register){:target="\_blank"}는 input에 자신의 반환값들을 속성으로 넘겨서 사용합니다.
 `register`의 첫 번째 인자로 input의 name을 받고, 두 번째 인자로 validation rules를 포함한 옵션 객체를 받습니다.
 
 `register`를 이용하면 손쉽게 비제어 컴포넌트의 validation을 작성할 수 있습니다.
@@ -109,7 +109,7 @@ const Form = () => {
 }
 ```
 
-[`Controller`](https://react-hook-form.com/docs/usecontroller/controller)는 컴포넌트를 `useForm`에 등록하고 제어하는 Wrapper 컴포넌트입니다.
+[`Controller`](https://react-hook-form.com/docs/usecontroller/controller){:target="\_blank"}는 컴포넌트를 `useForm`에 등록하고 제어하는 Wrapper 컴포넌트입니다.
 
 `Controller`를 사용하려면 `useForm`의 `control`을 props로 넘겨받아야 합니다.
 그러면 `render` 함수가 반환하는 컴포넌트가 `useForm`의 제어 컴포넌트로 등록되며, `Controller`가 해당 컴포넌트를 제어할 수 있게 됩니다.
@@ -178,7 +178,7 @@ const Form = () => {
 }
 ```
 
-`ref`를 props로 넘겨받기 위해서는 [`forwardRef`](https://react.dev/reference/react/forwardRef)로 컴포넌트를 감싸줘야 합니다.
+`ref`를 props로 넘겨받기 위해서는 [`forwardRef`](https://react.dev/reference/react/forwardRef){:target="\_blank"}로 컴포넌트를 감싸줘야 합니다.
 또한 `Input` 컴포넌트가 input 요소의 속성들도 props로 받을 수 있도록 React에서 제공하는 `InputHTMLAttributes`를 상속받아서 `IInputProps`를 구현했습니다.
 
 ### 2-2. Controller 사용 시
@@ -298,16 +298,16 @@ const Input = ({
 }
 ```
 `Input` 컴포넌트를 사용하는 코드가 놀랍도록 간단해진게 보이시나요?
-기존에 `Controller`의 `render`에서 주입하던 `value`, `onChange`, `error`와 같은 속성을 컴포넌트 내부에서 사용할 수 있어
-컴포넌트 외부에서는 `UseControllerProps`에 해당하는 props를 받아서 넘기기만 하면 끝입니다.
+기존에 `Controller`의 `render`에서 주입하던 `value`, `onChange`, `error`와 같은 속성을 input 컴포넌트 내부에서 사용할 수 있어
+input 컴포넌트 외부에서는 `UseControllerProps`에 해당하는 props를 받아서 넘기기만 하면 끝입니다.
 
 `UseControllerProps`의 타입은 다음과 같습니다.
 
 ![UseControllerProps](UseControllerProps.png)
 
 위 타입에 의하면 name만 필수 요소이고 나머지는 선택 요소입니다. 그러나 실제 동작 시에는 `control`을 넘기지 않으면 `useController` hook에서 에러가 발생합니다.
-[공식문서](https://www.react-hook-form.com/api/usecontroller/)에 의하면 `control`은 기본적으로 필수 요소이나,
-`useController`를 사용한 컴포넌트가 [`FormProvider`](https://www.react-hook-form.com/api/formprovider/)로 감싸져 있다면 `control`을 받지 않아도 된다고 합니다.
+[공식문서](https://www.react-hook-form.com/api/usecontroller/){:target="\_blank"}에 의하면 `control`은 기본적으로 필수 요소이나,
+`useController`를 사용한 컴포넌트가 [`FormProvider`](https://www.react-hook-form.com/api/formprovider/){:target="\_blank"}로 감싸져 있다면 `control`을 받지 않아도 된다고 합니다.
 (`FormProvider`의 context에서 `control`이 제공되는 듯 합니다.)
 
 <br />
@@ -329,7 +329,7 @@ const Input = ({
 ```
 
 이렇게 되면 `Input` 컴포넌트를 만들 때 미리 input의 name으로 사용할 타입을 지정해줘야 하기 때문에 재사용 가능한 컴포넌트를 구현할 수 없습니다.
-이를 해결하기 위해서는 `Input` 컴포넌트를 [제네릭 컴포넌트](https://ui.toast.com/posts/ko_20210505)로 만들어줘야 합니다.
+이를 해결하기 위해서는 `Input` 컴포넌트를 [제네릭 컴포넌트](https://ui.toast.com/posts/ko_20210505){:target="\_blank"}로 만들어줘야 합니다.
 
 제네릭 컴포넌트 작성을 위해 `UseControllerProps` 타입을 다시 확인해봅시다.
 
@@ -396,16 +396,15 @@ const Form = () => {
 }
 ```
 
-이로써 드디어 완전히 재사용 가능한 input 컴포넌트를 만들었습니다!
+드디어 완전히 재사용 가능한 input 컴포넌트를 만들었습니다!
 
 ## 마치며
 
 이렇게 작성한 컴포넌트를 매우 만족스럽게 사용하고 있지만, 여전히 약간 아쉬운 점이 있습니다.
 `useController`를 사용한 컴포넌트에는 반드시 `control`을 넘기거나 `FormProvider`로 컴포넌트를 감싸야 하기 때문에,
-UI만 필요한 경우 등 react-hook-form과 함께 사용하지 않을 때는 컴포넌트 재사용이 어렵다는 점입니다.  
+컴포넌트를 react-hook-form과 함께 사용하지 않을 때는 재사용이 어렵다는 점입니다. (input UI만 사용한다던지)  
 이를 해결하기 위해 UI만 있는 컴포넌트를 따로 구현하거나 `useController`가 적용된 wrapper 컴포넌트를 구현하는 등 여러 시도를 해봤지만
 아직 최선의 해결책을 찾지는 못한 것 같습니다. 이 부분은 조금 더 고민이 필요할 것 같네요.
 
-react-hook-form을 확장성 있게 사용하시고 싶은 분들에게 이 글이 조금이나마 도움이 되기를 바랍니다.  
 의견이나 오류 제보는 댓글 부탁드립니다!  
 감사합니다.
