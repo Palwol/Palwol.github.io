@@ -70,10 +70,12 @@ social_preview_image: "assets/img/avatar.jpeg"
 toc: true
 
 comments:
-  active: "disqus"
+  active: "utterances"
   # The active options are as follows:
-  disqus:
-    shortname: "mirimblog"
+  utterances:
+    repo: Palwol/Palwol.github.io
+    issue_term: pathname
+    theme: preferred-color-scheme
 
 # Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
 assets:
