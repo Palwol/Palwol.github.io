@@ -1,6 +1,6 @@
 ---
 title: 캐시 때문에 CORS 오류가 발생할 수 있다고?
-date: 2024-03-31 +0900
+date: 2024-04-10 +0900
 categories: [HTTP]
 tags: [HTTP, Cache, CORS]
 img_path: /assets/img/posts/2024-03-31
