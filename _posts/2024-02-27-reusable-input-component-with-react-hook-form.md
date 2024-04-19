@@ -2,7 +2,7 @@
 title: react-hook-form으로 재사용 가능한 input 컴포넌트 만들기
 date: 2024-02-29 +0900
 categories: [react]
-tags: [RHF, react]
+tags: [RHF, react, RHF]
 img_path: /assets/img/posts/2024-02-27
 image: react-hook-form-logo.png
 render_with_liquid: false
