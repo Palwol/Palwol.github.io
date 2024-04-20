@@ -9,3 +9,8 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      version-updates:
+        applies-to: version-updates
+      security-updates:
+        applies-to: security-updates
