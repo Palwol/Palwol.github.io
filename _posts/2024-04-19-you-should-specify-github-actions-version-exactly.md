@@ -1,6 +1,6 @@
 ---
 title: Github Actions에서 action 버전을 고정해야 하는 이유
-date: 2024-04-22 +0900
+date: 2024-04-23 +0900
 categories: [github]
 tags: [github-actions, dependabot, security]
 img_path: /assets/img/posts/2024-04-19
@@ -82,16 +82,23 @@ action의 내용이 달라지면 의도치 않은 동작이 발생할 수 있고
 `main`과 같은 대표 브랜치의 경우는 메이저 버전 업데이트조차 알림 없이 발생할 수 있기 때문에 action의 기존 내용과의 호환성이 깨질 수 있습니다. 따라서 브랜치 이름으로 action의 버전을 명시하는 방식은 공급망 공격 때문이 아니더라도 가급적 사용하지 않는 것이 좋습니다.
 
 ### commit SHA 사용
-commit SHA란?
-현재 전체 commit SHA를 명시하는 것이 action 내용의 불변성을 보장하는 유일한 방법.
-commit SHA 사용 시 장점 ~~~
+[commit SHA](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/about-commits#about-commits)는 SHA-1이라는 해시 알고리즘을 이용해 각 commit에 부여된 고유한 id입니다. 이 commit SHA는 변경된 내용, 변경된 시간, 변경한 사람에 따라서 달라지기 때문에 commit SHA가 다르면 변경이 발생한 다른 commit이라는 것을 보장할 수 있습니다.
+
+현재 저장소의 commit 이력과 commit SHA는 `git log` 명령어로 확인할 수 있습니다. `git log`를 입력하면 다음과 같이 commit 이력의 commit SHA, 커밋 작성자, 날짜, 커밋 메세지를 보여줍니다.
+
+![커밋 SHA](commit-sha.png)
+_commit 옆의 알 수 없는 문자 배열이 commit SHA이다._
+
+따라서 action의 버전을 전체 commit SHA로 고정하는 것은 action의 불변성을 보장해주며, 공급망 공격을 막을 수 있는 매우 중요한 보안 수단입니다. 또한 action이 각 실행에서 완벽하게 같은 동작을 하기 때문에 배포 위험을 최소화할 수 있고 디버깅이 쉬워집니다.
 
 ## action 업데이트 하기(dependabot)
-그럼 평생 고정된 버전의 action을 사용해야 하나? 아니면 일일이 수동으로 업데이트 해줘야 하나?
+그렇다면 보안을 위해 영원히 고정된 버전의 action을 사용해야 할까요? action 제작자가 성능이 개선되거나 기능이 추가된, 또는 보안 이슈가 해결된(!) 새로운 버전을 릴리즈 한다면 버전 업데이트가 필요할 것입니다. 이런 경우에는 일일이 수동으로 버전 업데이트를 해줘야 할까요?
 
-dependabot을 사용하면 됨.
-- dependency 버전을 최신으로 업데이트해주고 관리해줌.
-- dependency의 취약점을 확인하고 알려줌.
+이럴 때 사용하면 좋은 도구가 바로 [dependabot](https://docs.github.com/en/code-security/getting-started/dependabot-quickstart-guide)입니다. dependabot은 Github에서 제공하는 dependency 업데이트 자동화 도구로, 다음과 같은 기능을 가지고 있습니다.
+- dependency에 보안 취약점 발생 시 알림을 보냅니다.
+- dependency에 보안 업데이트, 버전 업데이트 발생 시 자동으로 PR을 생성합니다.
+
+dependabot을 사용하면...
 - github actions뿐만 아니라 npm, yarn 등 여러 패키지 관리자에서도 사용 가능.
 - 항상 최신 버전으로 유지하고 싶다면 dependabot이 최신 버전 업데이트 시 업데이트 내용과 커밋을 알려주기 때문에 확인하고 업데이트할 수 있음.
 - 취약점만 알려주도록 설정할 수도 있음!
