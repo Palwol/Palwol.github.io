@@ -4,7 +4,7 @@ date: 2024-04-25 +0900
 categories: [github]
 tags: [github-actions, dependabot, security]
 img_path: /assets/img/posts/2024-04-19
-image: GitHub-Actions.png
+# image: GitHub-Actions.png
 render_with_liquid: false
 ---
 
