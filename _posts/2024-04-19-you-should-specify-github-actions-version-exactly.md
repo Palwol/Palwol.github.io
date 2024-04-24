@@ -1,6 +1,6 @@
 ---
 title: Github Actions에서 action 버전을 고정해야 하는 이유
-date: 2024-04-23 +0900
+date: 2024-04-25 +0900
 categories: [github]
 tags: [github-actions, dependabot, security]
 img_path: /assets/img/posts/2024-04-19
@@ -84,26 +84,62 @@ action의 내용이 달라지면 의도치 않은 동작이 발생할 수 있고
 ### commit SHA 사용
 [commit SHA](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/about-commits#about-commits)는 SHA-1이라는 해시 알고리즘을 이용해 각 commit에 부여된 고유한 id입니다. 이 commit SHA는 변경된 내용, 변경된 시간, 변경한 사람에 따라서 달라지기 때문에 commit SHA가 다르면 변경이 발생한 다른 commit이라는 것을 보장할 수 있습니다.
 
+```yaml
+# ...
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+# ...
+```
+
+action 버전에 commit SHA만을 입력하면 현재 사용하고 있는 action이 어떤 버전인지 알기 어렵기 때문에 action 버전 뒤에 주석으로 릴리즈 태그를 달아주면 편하게 버전 정보까지 확인할 수 있습니다.
+
 현재 저장소의 commit 이력과 commit SHA는 `git log` 명령어로 확인할 수 있습니다. `git log`를 입력하면 다음과 같이 commit 이력의 commit SHA, 커밋 작성자, 날짜, 커밋 메세지를 보여줍니다.
 
 ![커밋 SHA](commit-sha.png)
-_commit 옆의 알 수 없는 문자 배열이 commit SHA이다._
+_commit 옆의 알 수 없는 문자 배열이 commit SHA입니다._
 
 따라서 action의 버전을 전체 commit SHA로 고정하는 것은 action의 불변성을 보장해주며, 공급망 공격을 막을 수 있는 매우 중요한 보안 수단입니다. 또한 action이 각 실행에서 완벽하게 같은 동작을 하기 때문에 배포 위험을 최소화할 수 있고 디버깅이 쉬워집니다.
 
-## action 업데이트 하기(dependabot)
+## action 업데이트 하기(Dependabot)
 그렇다면 보안을 위해 영원히 고정된 버전의 action을 사용해야 할까요? action 제작자가 성능이 개선되거나 기능이 추가된, 또는 보안 이슈가 해결된(!) 새로운 버전을 릴리즈 한다면 버전 업데이트가 필요할 것입니다. 이런 경우에는 일일이 수동으로 버전 업데이트를 해줘야 할까요?
 
-이럴 때 사용하면 좋은 도구가 바로 [dependabot](https://docs.github.com/en/code-security/getting-started/dependabot-quickstart-guide)입니다. dependabot은 Github에서 제공하는 dependency 업데이트 자동화 도구로, 다음과 같은 기능을 가지고 있습니다.
-- dependency에 보안 취약점 발생 시 알림을 보냅니다.
-- dependency에 보안 업데이트, 버전 업데이트 발생 시 자동으로 PR을 생성합니다.
+이럴 때 사용하면 좋은 도구가 바로 [Dependabot](https://docs.github.com/en/code-security/getting-started/dependabot-quickstart-guide)입니다. Dependabot은 Github에서 제공하는 dependency 업데이트 자동화 도구로, 다음과 같은 기능을 가지고 있습니다.
+- 의존성 보안 취약점 발생 시 알림을 보냅니다.
+- 의존성에 보안 업데이트, 버전 업데이트가 발생하면 자동으로 업데이트 PR을 생성합니다.
 
-dependabot을 사용하면...
-- github actions뿐만 아니라 npm, yarn 등 여러 패키지 관리자에서도 사용 가능.
-- 항상 최신 버전으로 유지하고 싶다면 dependabot이 최신 버전 업데이트 시 업데이트 내용과 커밋을 알려주기 때문에 확인하고 업데이트할 수 있음.
-- 취약점만 알려주도록 설정할 수도 있음!
-- (블로그 dependabot 추가 예시 삽입)
+Dependabot 관리하는 의존성 시스템은 Github Actions뿐만 아니라 npm, yarn과 같은 패키지 매니저도 포함합니다. [package-ecosystem](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem)에서 Dependabot이 지원하는 패키지 시스템 목록을 확인할 수 있습니다.
+
+### Dependabot 사용하기
+Dependabot을 활성화시키는 방법은 매우 간단합니다. Dependabot으로 의존성을 관리하고 싶은 레포지토리에서 **Settings > (왼쪽 메뉴의) Security > Code security and analysis** 메뉴에 들어갑니다.
+
+![Dependabot 메뉴](dependabot.png)
+_Dependabot 설정 항목들_
+
+그럼 위와 같은 항목들이 나타나는데, 여기서 원하는 항목의 `Enable` 버튼을 눌러 활성화 시키면 끝입니다. 너무 간단하죠? 따로 설정 파일을 만들어 줄 필요도 없습니다.
+
+github는 이미 레포지토리에서 사용하고 있는 각종 의존성의 정보를 가지고 있습니다. 현재 레포지토리서 사용 중인 의존성 정보는 레포지토리의 **Insights > (왼쪽 메뉴의) Dependency graph > Dependencies** 탭에서 확인할 수 있습니다.
+
+Dependabot을 활성화하면 이 정보들을 이용해서 어떤 의존성 모듈이 최신 업데이트 되었는지, 보안 이슈가 발생했는지를 확인하고 해결하는 PR을 자동으로 생성합니다. 어떤 변경이 발생했는지 전체 release 로그도 PR 내용에 같이 남겨주므로 release 내용에 문제가 없는지 확인하고 PR을 반영할 수 있습니다. 여러모로 효자 로봇(?)인 듯 합니다.
+
+![Dependabot이 올린 PR](dependabot-pr.png)
+_Dependabot이 이쁘게 PR을 올려줍니다._
+
+참고로 action 버전으로 commit SHA를 사용할 때 가독성을 위해 주석으로 릴리즈 태그를 같이 작성해주는데, dependabot은 의존성 업데이트 시 이 주석까지 같이 수정해줍니다.
+
+![주석까지 수정해주는 Dependabot](dependabot-tag.png)
+_v4.1.1에서 v4.1.3으로 주석까지 업데이트 해주는 멋쟁이 Dependabot 🎉_
+
+또한 앞서 설정 파일이 필요하지 않다고 했는데, `dependabot.yml` 파일을 작성하면 버전 확인을 원하지 않는 모듈을 제거하거나 버전 확인 주기를 변경하는 등의 상세한 설정도 가능합니다. 자세한 내용은 [Configuring Dependabot version updates](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates) 문서를 참고해 주세요.
 
 ## 마치며
+이번 일을 겪으면서 그 동안 수많은 오픈소스를 사용하면서도 보안에 너무 무심했던 것 같다는 생각이 들었습니다. 사용 중인 오픈소스에 취약점 발생, 지원 중단, 호환 불가 등의 이슈가 발생했을 때 메인테이너에게 모든 책임을 떠넘기고 해결해 주기만을 기다릴 수는 없을 것입니다. 사용자도 오픈소스에 언제든 문제가 생길 수 있다는 사실을 인지하고 대비해야 하지 않을까 합니다.
 
-- 오픈소스 라이브러리에 취약점 발생, 지원 중단, 호환 불가 등의 이슈가 발생한다면 메인테이너에게 모든 책임을 떠넘기고 해결해 주기만을 기다릴 수는 없음. 사용자도 어느 정도 책임감을 가지고 라이브러리를 사용해야 하고, 오픈소스인 이상 라이브러리에 언제든 문제가 생길 수 있다는 사실을 인지하고 대책을 가지고 있어야 할 듯.
+읽어주셔서 감사합니다!
